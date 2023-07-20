@@ -48,24 +48,24 @@ if __name__ == "__main__":
     db.create_tables([User, Transaction])
     user = User.create(id=1, name="John", balance=100, registered=datetime.now())
     Transaction.create(
-        id=1, owner_id=user.id, direction="in", amount=100, created=datetime(2022, 6, 4)
+        id=1, owner_id=user.id, direction="in", amount=100, created=datetime(2023, 7, 4)
     )
     Transaction.create(
         id=2,
         owner_id=user.id,
         direction="out",
         amount=50,
-        created=datetime(2022, 6, 10),
+        created=datetime(2023, 7, 10),
     )
     Transaction.create(
         id=3,
         owner_id=user.id,
         direction="in",
         amount=100,
-        created=datetime(2022, 6, 21),
+        created=datetime(2023, 7, 21),
     )
     print(
         get_user_transcations_in_period(
-            user_id=1, since=datetime(2022, 6, 5), till=datetime(2022, 6, 20)
+            user_id=1, since=datetime(2023, 7, 5), till=datetime(2023, 7, 20)
         )
     )
