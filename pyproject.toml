@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "permyakova"
+version = "0.1.0"
+description = ""
+authors = ["Anton Bagrianov <rudiemeant@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+aiogram = "^2.25.1"
+defusedxml = "^0.7.1"
+peewee = "^3.16.2"
+fonttools = "^4.41.0"
+
+
+[tool.poetry.group.dev.dependencies]
+isort = "^5.12.0"
+black = "^23.7.0"
+mypy = "^1.4.1"
+flake8 = "^6.0.0"
+types-peewee = "^3.16.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = "black"
+line_length = 88
