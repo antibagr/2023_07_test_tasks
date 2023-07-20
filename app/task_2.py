@@ -2,12 +2,12 @@ from datetime import datetime
 
 from peewee import (
     CharField,
-    Check,
     DateTimeField,
     ForeignKeyField,
     IntegerField,
     Model,
     SqliteDatabase,
+    fn,
 )
 
 db = SqliteDatabase("task_2.db")
@@ -26,9 +26,9 @@ class User(Model):
 class Transaction(Model):
     id = IntegerField(primary_key=True)
     owner_id = ForeignKeyField(User, backref="transactions")
-    direction = CharField(constraints=[Check('direction in ("in", "out")')])
+    direction = CharField(choices=["in", "out"])
     amount = IntegerField()
-    created = DateTimeField()
+    created = DateTimeField(default=datetime.now)
 
     class Meta:
         database = db
@@ -41,6 +41,27 @@ def get_user_transcations_in_period(
         Transaction.owner_id == user_id, Transaction.created.between(since, till)
     )
     return list(transactions)
+
+
+def get_users_with_total_transactions_in_period(
+    since: datetime, till: datetime
+) -> list[User]:
+    users = (
+        User.select(
+            User.id,
+            User.name,
+            fn.Count(Transaction.id)
+            .filter(Transaction.direction == "in")
+            .alias("sum_of_input_trns"),
+            fn.Count(Transaction.id)
+            .filter(Transaction.direction == "out")
+            .alias("sum_of_output_trns"),
+        )
+        .join(Transaction)
+        .where(Transaction.created.between(since, till))
+        .tuples()
+    )
+    return list(users)
 
 
 if __name__ == "__main__":
@@ -61,11 +82,18 @@ if __name__ == "__main__":
         id=3,
         owner_id=user.id,
         direction="in",
+        amount=50,
+        created=datetime(2023, 7, 10),
+    )
+    Transaction.create(
+        id=4,
+        owner_id=user.id,
+        direction="in",
         amount=100,
         created=datetime(2023, 7, 21),
     )
     print(
-        get_user_transcations_in_period(
-            user_id=1, since=datetime(2023, 7, 5), till=datetime(2023, 7, 20)
+        get_users_with_total_transactions_in_period(
+            since=datetime(2023, 7, 5), till=datetime(2023, 7, 20)
         )
     )
